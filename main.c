@@ -14,21 +14,28 @@
 #include <math.h>
 
 /* RSA算法中加密方公布的密钥是N和E，解密方使用N和D解密 */
-#define P    5    /* P和Q必须为素数，在实际运用中通常为很大的数 */
-#define    Q    7
+#define P   (5)    /* P和Q必须为素数，在实际运用中通常为很大的数 */
+#define Q   (7)
 
-#define N    (P*Q)    /* add the (), or will cause the mistake */
-#define Z    ((P - 1)*(Q - 1))
+// public key n
+#define N   (P*Q)   /* add the (), or will cause the mistake */
 
-#define E    5        /* 加密方选择E，E必须和Z只有一个公约数 */
-#define D    5        /* (E * D - 1)必须能够被Z整除 */
+// phi(n)
+#define PHI ((P - 1)*(Q - 1))
+
+#define E   (5)        /* 加密方选择E，E必须和PHI只有一个公约数 */
+#define D   (5)        /* (E * D - 1)必须能够被PHI整除 */
 
 /* 由于long int无法表示过大的数字，所以D取5 */
 
+// Returns gcd of a and b
+int gcd(int a, int b) {
+    return a == 0 ? b : gcd(b, a % b);
+}
 
 int main(void) {
     int i;
-    int TrsMsg[4] = {12, 15, 22, 5};
+    int msg[4] = {12, 15, 22, 5};
     long en[4], de[4];
     int SecCode[4], DeMsg[4];
 
@@ -38,10 +45,10 @@ int main(void) {
 
     for (i = 0; i < 4; i++) {
         /* s = m(E) mod N */
-        en[i] = (int) pow(TrsMsg[i], E);
+        en[i] = (int) pow(msg[i], E);
         SecCode[i] = en[i] % N;
 
-        printf("%d\t%d\t\t%d\n", TrsMsg[i], en[i], SecCode[i]);
+        printf("%d\t%d\t\t%d\n", msg[i], en[i], SecCode[i]);
     }
 
     printf("\n原始报文\t密文\t加密\t\t解密报文\n");
@@ -50,7 +57,7 @@ int main(void) {
         de[i] = pow(SecCode[i], D);
         DeMsg[i] = de[i] % N;
 
-        printf("%d\t\t%d\t%d\t\t%d\n", TrsMsg[i], SecCode[i], de[i], DeMsg[i]);
+        printf("%d\t\t%d\t%d\t\t%d\n", msg[i], SecCode[i], de[i], DeMsg[i]);
     }
 
     getchar();
